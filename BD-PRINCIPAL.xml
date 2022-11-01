@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<archivoConfiguraciones> 
+    <listaRecursos> 
+        <recurso id="007">   
+            <nombre> TARJETA GRAFICA </nombre> 
+            <abreviatura> TG </abreviatura> 
+            <metrica> TG007 </metrica> 
+            <tipo> HARDWARE </tipo> 
+            <valorXhora> 50.00 </valorXhora> 
+        </recurso>  
+        <recurso id="003">   
+            <nombre> RAM </nombre> 
+            <abreviatura> RAM </abreviatura> 
+            <metrica> RAM003 </metrica> 
+            <tipo> HARDWARE </tipo> 
+            <valorXhora> 10.50 </valorXhora> 
+        </recurso>
+        <recurso id="006">   
+            <nombre> PROCESADOR </nombre> 
+            <abreviatura> PC </abreviatura> 
+            <metrica> PC006 </metrica> 
+            <tipo> HARDWARE </tipo> 
+            <valorXhora> 13.50 </valorXhora> 
+        </recurso>
+    </listaRecursos> 
+    <listaCategorias> 
+        <categoria id="CAT01"> 
+            <nombre> MINERIA SS </nombre> 
+            <descripcion> MINERIA VIRTUAL DE MONEDAS  </descripcion> 
+            <cargaTrabajo> MINERIA DE BITCOIN </cargaTrabajo> 
+            <listaConfiguraciones> 
+                <configuracion id="501">   
+                    <nombre> MITRIL </nombre> 
+                    <descripcion> CONFIGURACION PARA LA MINERIA DE MONEDAS VIRTUALES </descripcion> 
+                    <recursosConfiguracion> 
+                        <recurso id="007"> 20 </recurso>
+                        <recurso id="003"> 40 </recurso>
+                        <recurso id="006"> 20 </recurso> 
+                    </recursosConfiguracion> 
+                </configuracion>  
+            </listaConfiguraciones> 
+        </categoria> 
+    </listaCategorias> 
+    <listaClientes> 
+        <cliente nit="1543647"> 
+            <nombre> ELON MUSK </nombre> 
+            <usuario> ELONMSK </usuario> 
+            <clave> TESLA001 </clave> 
+            <direccion> USA, WASHINGTON D.C. AV 45  </direccion> 
+            <correoElectronico> ELONMUSK001@TESLA.COM </correoElectronico> 
+            <listaInstancias> 
+                <instancia id="047"> 
+                    <idConfiguracion> 501 </idConfiguracion> 
+                    <nombre> DINERITO FACIL </nombre> 
+                    <fechaInicio> Guatemala, 01/01/2022 </fechaInicio> 
+                    <estado> ACTIVO </estado> 
+                    <fechaFinal> Guatemala, 023/04/2022 </fechaFinal> 
+                </instancia>  
+            </listaInstancias> 
+        </cliente>
+    </listaClientes> 
+</archivoConfiguraciones>
