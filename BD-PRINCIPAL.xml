@@ -58,5 +58,21 @@
                 </instancia>  
             </listaInstancias> 
         </cliente>
+        <cliente nit="1543647"> 
+            <nombre> ELON MUSK </nombre> 
+            <usuario> ELONMSK </usuario> 
+            <clave> TESLA001 </clave> 
+            <direccion> USA, WASHINGTON D.C. AV 45  </direccion> 
+            <correoElectronico> ELONMUSK001@TESLA.COM </correoElectronico> 
+            <listaInstancias> 
+                <instancia id="047"> 
+                    <idConfiguracion> 501 </idConfiguracion> 
+                    <nombre> DINERITO FACIL </nombre> 
+                    <fechaInicio> Guatemala, 01/01/2022 </fechaInicio> 
+                    <estado> ACTIVO </estado> 
+                    <fechaFinal> Guatemala, 023/04/2022 </fechaFinal> 
+                </instancia>  
+            </listaInstancias> 
+        </cliente>
     </listaClientes> 
 </archivoConfiguraciones>

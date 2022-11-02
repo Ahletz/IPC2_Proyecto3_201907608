@@ -55,7 +55,7 @@ def Archivo_principal():
 
         #BD-XML CATEGORIAS 
 
-        head = ET.Element('Categorias') #etiqueta del xml
+        head = ET.Element('Categorias') #etiqueta del xml PRINCIPAL CATEGORIAS
 
         categorias = root.find('listaCategorias')
 
@@ -66,11 +66,15 @@ def Archivo_principal():
             Descripcion = j.find('descripcion').text
             CargaTrabajo = j.find('cargaTrabajo').text
 
-            Categoria = ET.SubElement(categorias, 'Categoria', id = id_categoria)
+            #SUBELEMENTOS DE CATETGORIAS
+
+            Categoria = ET.SubElement(head, 'Categoria', id = id_categoria)
 
             ET.SubElement(Categoria, 'nombre').text = Nombre_categoria
             ET.SubElement(Categoria, 'descripcion').text = Descripcion
             ET.SubElement(Categoria, 'cargaTrabajo').text = CargaTrabajo
+
+            ListaConfig = ET.SubElement(Categoria, 'listaConfiguraciones')
 
             ListaConfiguraciones = j.find('listaConfiguraciones')
 
@@ -80,27 +84,77 @@ def Archivo_principal():
                 nombre_configuracion = k.find('nombre').text
                 descripcion_configuracion = k.find('descripcion').text
 
-                ListaConfig = ET.SubElement(categorias, 'listaConfiguraciones')
-
+                #SUBELEMNTOS DE CATEGORIA
                 Config = ET.SubElement(ListaConfig, 'configuracion', id= id_configuracion)
+                
                 ET.SubElement(Config, 'nombre').text = nombre_configuracion
                 ET.SubElement(Config, 'descripcion').text = descripcion_configuracion
+
+                Recursos = ET.SubElement(Config, 'recursosConfiguracion')
 
                 Recursos_configurasion = k.find('recursosConfiguracion')
 
                 for l in Recursos_configurasion.findall('recurso'):
 
                     id_recurso_config = l.attrib.get('id')
-                    nombre_recurso = l.find('recurso').text
-
-
-                    Recursos = ET.SubElement(Config, 'recursosConfiguracion')
-
+                    nombre_recurso = l.text
                     ET.SubElement(Recursos, 'recurso', id= id_recurso_config).text = nombre_recurso
         
         create = ET.ElementTree(head)
         create.write('BD-Categorias.xml')
 
+
+        #BD-XML CLIENTES
+
+        clientes = root.find('listaClientes')
+
+        head = ET.Element('listaClientes') #ETIQUETA INICIAL DEL DOCUMENTO
+
+
+        for m in clientes.findall('cliente'):
+
+            id_nit = m.attrib.get('nit')
+            nombre_categoria = m.find('nombre').text
+            usuario =  m.find('usuario').text
+            clave =  m.find('clave').text
+            direccion =  m.find('direccion').text
+            correo =  m.find('correoElectronico').text
+
+            listaInstancias = m.find('listaInstancias')
+
+            #CREACION DE BS-XML 
+            cliente = ET.SubElement(head, 'Cliente', nit = id_nit)
+
+            ET.SubElement(cliente, 'nombre').text = nombre_categoria
+            ET.SubElement(cliente, 'usuario').text = usuario
+            ET.SubElement(cliente, 'clave').text = clave
+            ET.SubElement(cliente, 'direccion').text = direccion
+            ET.SubElement(cliente, 'correo').text = correo
+
+            Instancias = ET.SubElement(cliente, 'listaInstancias')
+
+            for n in listaInstancias.findall('instancia'):
+
+                id_instancia = n.attrib.get('id')
+                idConfiguracion = n.find('idConfiguracion').text
+                nombre_instancia = n.find('nombre').text
+                fechaInicio = n.find('fechaInicio').text
+                estado = n.find('estado').text
+                fechaFinal = n.find('fechaFinal').text
+
+
+                Instancia = ET.SubElement(Instancias, 'Instancia', id= id_instancia)
+
+                ET.SubElement(Instancia, 'nombre').text = nombre_categoria
+                ET.SubElement(Instancia, 'idConfiguracion').text = idConfiguracion
+                ET.SubElement(Instancia, 'nombre').text = nombre_instancia
+                ET.SubElement(Instancia, 'fechaInicio').text = fechaInicio
+                ET.SubElement(Instancia, 'estado').text = estado
+                ET.SubElement(Instancia, 'fechaFinal').text = fechaFinal
+
+        
+        create = ET.ElementTree(head)
+        create.write('BD-Clientes.xml')
 
 
         return jsonify({'mensaje': 'DATOS ALMACENADOS'}) #RETORNAR UN JSON CON MENSAJE DE DATOS CAPTURADOS
