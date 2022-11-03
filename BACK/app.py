@@ -1,8 +1,72 @@
 
 from flask import Flask, request, jsonify
 import xml.etree.ElementTree as ET
+from datetime import datetime
 
 app = Flask(__name__)
+
+def Fecha(fecha):
+
+        fecha = fecha
+
+        tiempo = 0
+
+        fecha_correcta = ''
+
+        for i in fecha:
+
+            if i.isdigit() or i == '/':
+
+                fecha_correcta +=i
+
+
+
+        dia = int(fecha_correcta[0] + fecha_correcta[1])
+        mes = int(fecha_correcta[3] + fecha_correcta[4])
+        año = int(fecha_correcta[6] + fecha_correcta[7] + fecha_correcta[8] + fecha_correcta[9])
+
+        now = datetime.now()
+
+        now_año = int(now.year)
+        now_month = int(now.month)
+        now_day = int(now.day)
+
+        temp = año - now_año
+
+        if temp > 0:
+
+            tiempo += temp * 8760
+
+        if mes > now_month:
+
+            mes = mes *730
+
+            tiempo += mes 
+
+        elif mes<now_month: 
+
+            tiempo += (now_month - mes )*730
+
+
+        if dia > now_day:
+
+            dia = dia *24
+
+            tiempo += dia 
+
+        elif dia<now_day: 
+
+            tiempo += (now_day - dia )*24
+
+
+        return tiempo
+
+
+def Mensaje_confirmacion(nit, id_estancia, fecha):
+        
+        contenido = f'<consumo nitCliente="{nit}" idInstancia="{id_estancia}"> <fechaHora> {fecha} H </fechaHora> </consumo>'
+
+        return contenido
 
 @app.route('/Principal', methods = ["POST"])
 
@@ -156,16 +220,128 @@ def Archivo_principal():
         create = ET.ElementTree(head)
         create.write('BD-Clientes.xml')
 
+        #CREACION DE MENSAJE DE RECIBIDO
 
-        return jsonify({'mensaje': 'DATOS ALMACENADOS'}) #RETORNAR UN JSON CON MENSAJE DE DATOS CAPTURADOS
+        comienzo = '<?xml version="1.0"?> <listadoConsumos>'
+
+        for r in clientes.findall('cliente'):
+
+            id_nit = r.attrib.get('nit')
+
+            listaInstancias = r.find('listaInstancias')
+
+            for p in listaInstancias.findall('instancia'):
+
+                id_instancia = p.attrib.get('id')
+
+                tiempo = Fecha(p.find('fechaInicio').text)
+
+                contenido = Mensaje_confirmacion(id_nit, id_instancia, tiempo)
+
+                comienzo += contenido
+
+        final = ' </listadoConsumos>'
+
+        comienzo += final
+
+
+        return comienzo #RETORNAR UN JSON CON MENSAJE DE DATOS CAPTURADOS
 
     except Exception as ex: #CAPTURA DE ERRORES ENVIANDO UN MENSAJE DE ERROR AL MOMENTO 
 
         return jsonify({'mensaje':'ERROR '}) #MENSAJE DE ERROR
 
+
+@app.route('/Consultar-Recurso/<idRecurso>', methods = ["GET"])
+    
+def Consultar_Recurso(idRecurso):
+
+    #try: 
+
+        id_recurso = idRecurso
+
+        tree = ET.parse('BD-Recursos.xml') #abrir xml
+
+        root = tree.getroot() #obtener xml
+
+        
+
+        for i in root.findall('Recurso'):
+
+            if i.attrib.get('id') == id_recurso:
+
+                nombre = i.find('nombre').text
+                abreviatura = i.find('abreviatura').text
+                metrica = i.find('metrica').text
+                tipo = i.find('tipo').text
+                valorXhora = i.find('valorXhora').text
+
+                contenido = jsonify({'nombre': nombre , 'abreviatura': abreviatura, 'metrica': metrica , 'tipo':tipo, 'valorXhora':valorXhora})
+
+        return contenido
+
+"""except Exception as ex:
+
+        return jsonify({'mensaje':'ERROR '}) #MENSAJE DE ERROR"""
+
+@app.route('/Consultar-Categorias/<idCategorias>', methods = ["GET"])
+
+def Consultar_Categorias(idCategorias):
+
+    id_Categoria = idCategorias
+
+    tree = ET.parse('BD-Categorias.xml') #abrir xml
+
+    root = tree.getroot() #obtener xml
+
+
+    for i in root.findall('Categoria'):
+
+        if i.attrib.get('id') == id_Categoria:
+
+            nombre = i.find('nombre').text
+            descripcion = i.find('descripcion').text
+            Carga = i.find('cargaTrabajo').text
+
+            contenido = jsonify({'nombre': nombre , 'descripcion': descripcion, 'Carga de Trabajo': Carga})
+
+
+    return contenido
+
+
+@app.route('/Consultar-Cliente/<nit>', methods = ["GET"])
+
+def Consultar_Cliente(nit):
+
+    nit = nit
+
+    tree = ET.parse('BD-Clientes.xml') #abrir xml
+
+    root = tree.getroot() #obtener xml
+
+
+    for i in root.findall('Cliente'):
+
+        if i.attrib.get('nit') == nit:
+
+            nombre = i.find('nombre').text
+            usuario= i.find('usuario').text
+            clave = i.find('clave').text
+            direccion = i.find('direccion').text
+            correo = i.find('correo').text
+
+            contenido = jsonify({'nombre': nombre , 'descripcion': usuario, 'Carga de Trabajo': clave, 'direccion': direccion, 'correo': correo})
+
+
+    return contenido
+
+
+
+
 if __name__ == '__main__':
 
     app.run(debug=True)
+
 
 
 
